@@ -64,6 +64,19 @@ module MidiLyrics
       end
     end
 
+    def extract
+      read_sequence_from_file
+      load_tracks
+      calculate_durations
+      load_lyrics
+      remove_heading_blank_lines
+      consolidate_empty_syllables
+      remove_lines_trailing_spaces
+      remove_repeating unless repeating
+      @lyrics
+    end
+
+    private
     def read_sequence_from_file
       @sequence = ::MIDI::Sequence.new()
       File.open(file, "rb") do | file |
@@ -168,18 +181,6 @@ module MidiLyrics
       if half_is_equal
         merge_half_lyrics
       end
-    end
-
-    def extract
-      read_sequence_from_file
-      load_tracks
-      calculate_durations
-      load_lyrics
-      remove_heading_blank_lines
-      consolidate_empty_syllables
-      remove_lines_trailing_spaces
-      remove_repeating unless repeating
-      @lyrics
     end
   end
 end
