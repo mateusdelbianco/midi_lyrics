@@ -42,7 +42,7 @@ module MidiLyrics
     attr_reader :file, :repeating
 
     def initialize(file, options = {})
-      options = { repeating: true }.merge(options)
+      options = { repeating: false }.merge(options)
       @file = file
       @repeating = options[:repeating]
 

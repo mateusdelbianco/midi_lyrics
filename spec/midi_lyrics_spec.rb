@@ -56,7 +56,7 @@ describe MidiLyrics do
     end
 
     it "parses repeating_lyrics.mid correctly repeating" do
-      lyrics = MidiLyrics::Parser.new("spec/fixtures/repeating_lyrics.mid").extract
+      lyrics = MidiLyrics::Parser.new("spec/fixtures/repeating_lyrics.mid", repeating: true).extract
       lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
       expect(lyrics).to eq([
         { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
@@ -79,7 +79,7 @@ describe MidiLyrics do
     end
 
     it "parses repeating_lyrics.mid correctly not repeating" do
-      lyrics = MidiLyrics::Parser.new("spec/fixtures/repeating_lyrics.mid", repeating: false).extract
+      lyrics = MidiLyrics::Parser.new("spec/fixtures/repeating_lyrics.mid").extract
       lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
       expect(lyrics).to eq([
         { text: "Test", start: 0.0, start2: 2.5, duration: QUARTER_NOTE_DURATION },
@@ -121,7 +121,7 @@ describe MidiLyrics do
     end
 
     it "parses complete_example.mid correctly not repeating" do
-      lyrics = MidiLyrics::Parser.new("spec/fixtures/complete_example.mid", repeating: false).extract
+      lyrics = MidiLyrics::Parser.new("spec/fixtures/complete_example.mid", repeating: true).extract
       lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
       expect(lyrics).to eq(parsed_complete_example)
     end
