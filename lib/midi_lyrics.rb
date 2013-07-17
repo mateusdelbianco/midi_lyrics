@@ -23,22 +23,6 @@ module MidiLyrics
       format_time(duration_in_pulses)
     end
 
-    def as_json
-      hash = {
-        "start" => self.start,
-        "duration" => self.duration,
-        "text" => self.text
-      }
-    #   unless start2.nil?
-    #     hash.merge!("start2" => self.seq.pulses_to_seconds(self.start2.to_f).round(3))
-    #   end
-    #   hash
-    end
-
-    # def similar_to?(another)
-    #   self.duration == another.duration && self.text == another.text
-    # end
-
     private
     def format_time(time)
       @sequence.pulses_to_seconds(time.to_f).round(3)
