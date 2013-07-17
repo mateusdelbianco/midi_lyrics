@@ -73,7 +73,7 @@ module MidiLyrics
       consolidate_empty_syllables
       remove_lines_trailing_spaces
       remove_repeating unless repeating
-      @lyrics
+      @lyrics.collect(&:as_json)
     end
 
     private
