@@ -28,6 +28,10 @@ module MidiLyrics
       format_time(duration_in_pulses)
     end
 
+    def blank?
+      text.strip == ""
+    end
+
     def similar_to?(another)
       self.duration_in_pulses == another.duration_in_pulses && self.text == another.text
     end
@@ -73,10 +77,7 @@ module MidiLyrics
       @noteon_track = ::MIDI::Track.new(@sequence)
       @sequence.tracks[1].each do | event |
         if event.kind_of?(::MIDI::MetaEvent) && event.meta_type == ::MIDI::META_LYRIC
-          text = event.data.collect{|x| x.chr(Encoding::UTF_8)}.join
-          if text.gsub(" ", "") != ""
-            @lyrics_track.events << event
-          end
+          @lyrics_track.events << event
         end
         if event.kind_of?(::MIDI::NoteOn)
           @noteon_track.events << event
@@ -92,13 +93,25 @@ module MidiLyrics
     end
 
     def load_lyrics
-      @lyrics = @lyrics_track.collect do |event|
-        LyricSyllable.new(
-          sequence: @sequence,
-          start_in_pulses: event.time_from_start,
-          duration_in_pulses: @durations[event.time_from_start],
-          text: event.data.collect{|x| x.chr(Encoding::UTF_8)}.join,
-        )
+      @lyrics = []
+      @lyrics_track.each do |event|
+        parts = event.data.collect{|x| x.chr(Encoding::UTF_8)}.join.match(/([^\s]*)(\s*)/)
+        if parts[1] != ""
+          @lyrics << LyricSyllable.new(
+            sequence: @sequence,
+            start_in_pulses: event.time_from_start,
+            duration_in_pulses: @durations[event.time_from_start],
+            text: parts[1]
+          )
+        end
+        if parts[2] != ""
+          @lyrics << LyricSyllable.new(
+            sequence: @sequence,
+            start_in_pulses: event.time_from_start,
+            duration_in_pulses: 0,
+            text: parts[2]
+          )
+        end
       end
     end
 
@@ -108,13 +121,17 @@ module MidiLyrics
       end
     end
 
-    def consolidate_carriage_returns
+    def consolidate_empty_syllables
       new_lyrics = []
       @lyrics.each do |l|
-        if ["\r", "\n"].include?(l.text)
-          l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
-          l.duration_in_pulses = 0
-          new_lyrics << l
+        if l.blank?
+          if new_lyrics.last.blank?
+            new_lyrics.last.text += l.text
+          else
+            l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
+            l.duration_in_pulses = 0.0
+            new_lyrics << l
+          end
         else
           new_lyrics << l
         end
@@ -151,7 +168,7 @@ module MidiLyrics
       calculate_durations
       load_lyrics
       remove_heading_blank_lines
-      consolidate_carriage_returns
+      consolidate_empty_syllables
       remove_repeating unless repeating
       @lyrics
     end
