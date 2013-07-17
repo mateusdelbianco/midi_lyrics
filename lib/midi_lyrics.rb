@@ -42,7 +42,7 @@ module MidiLyrics
     attr_reader :file, :repeating
 
     def initialize(file, options = {})
-      options = { :repeating => true }.merge(options)
+      options = { repeating: true }.merge(options)
       @file = file
       @repeating = options[:repeating]
 
@@ -85,10 +85,10 @@ module MidiLyrics
     def load_lyrics
       @lyrics = @lyrics_track.collect do |event|
         LyricSyllable.new(
-          :sequence => @sequence,
-          :start_in_pulses => event.time_from_start,
-          :duration_in_pulses => @durations[event.time_from_start],
-          :text => event.data.collect{|x| x.chr(Encoding::UTF_8)}.join,
+          sequence: @sequence,
+          start_in_pulses: event.time_from_start,
+          duration_in_pulses: @durations[event.time_from_start],
+          text: event.data.collect{|x| x.chr(Encoding::UTF_8)}.join,
         )
       end
     end
