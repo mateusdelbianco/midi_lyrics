@@ -95,22 +95,24 @@ module MidiLyrics
     def load_lyrics
       @lyrics = []
       @lyrics_track.each do |event|
-        parts = event.data.collect{|x| x.chr(Encoding::UTF_8)}.join.match(/([^\s]*)(\s*)/)
-        if parts[1] != ""
-          @lyrics << LyricSyllable.new(
-            sequence: @sequence,
-            start_in_pulses: event.time_from_start,
-            duration_in_pulses: @durations[event.time_from_start],
-            text: parts[1]
-          )
-        end
-        if parts[2] != ""
-          @lyrics << LyricSyllable.new(
-            sequence: @sequence,
-            start_in_pulses: event.time_from_start,
-            duration_in_pulses: 0,
-            text: parts[2]
-          )
+        event_text = event.data.collect{|x| x.chr(Encoding::UTF_8)}.join
+        letters = event_text.gsub(/^\s+|\s+$/, '')
+
+        heading_space = event_text.match(/^(\s+)[^\s]/)
+        heading_space = heading_space[1] unless heading_space.nil?
+
+        trailing_space = event_text.match(/(\s+)$/)
+        trailing_space = trailing_space[1] unless trailing_space.nil?
+
+        [heading_space, letters, trailing_space].each do |text|
+          unless text.nil?
+            @lyrics << LyricSyllable.new(
+              sequence: @sequence,
+              start_in_pulses: event.time_from_start,
+              duration_in_pulses: @durations[event.time_from_start],
+              text: text
+            )
+          end
         end
       end
     end

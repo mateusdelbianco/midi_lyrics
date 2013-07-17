@@ -54,6 +54,15 @@ describe MidiLyrics do
       ])
     end
 
+    it "parses one_note_two_syllable.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/one_note_two_syllable.mid").extract.collect(&:as_json)
+      ).to eq([
+        { text: "Test One", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r\n", start: QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
     it "parses two_notes_one_syllable.mid correctly" do
       expect(
         MidiLyrics::Parser.new("spec/fixtures/two_notes_one_syllable.mid").extract.collect(&:as_json)
@@ -68,6 +77,16 @@ describe MidiLyrics do
         MidiLyrics::Parser.new("spec/fixtures/two_notes_two_syllables.mid").extract.collect(&:as_json)
       ).to eq([
         { text: "Test", start: 0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
+    it "parses two_notes_three_syllables.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/two_notes_three_syllables.mid").extract.collect(&:as_json)
+      ).to eq([
+        { text: "Hello, test", start: 0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "\r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
