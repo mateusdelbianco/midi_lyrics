@@ -5,11 +5,12 @@ module MidiLyrics
   class FileNotFound < StandardError; end
 
   class LyricSyllable
-    attr_accessor :text, :start_in_pulses, :duration_in_pulses
+    attr_accessor :text, :start_in_pulses, :start2_in_pulses, :duration_in_pulses
     attr_writer :sequence
 
     def initialize(fields = {})
       self.start_in_pulses = fields[:start_in_pulses]
+      self.start2_in_pulses = fields[:start2_in_pulses]
       self.duration_in_pulses = fields[:duration_in_pulses]
       self.text = fields[:text]
       self.sequence = fields[:sequence]
@@ -19,8 +20,16 @@ module MidiLyrics
       format_time(start_in_pulses)
     end
 
+    def start2
+      format_time(start2_in_pulses)
+    end
+
     def duration
       format_time(duration_in_pulses)
+    end
+
+    def similar_to?(another)
+      self.duration_in_pulses == another.duration_in_pulses && self.text == another.text
     end
 
     private
@@ -30,17 +39,21 @@ module MidiLyrics
   end
 
   class Parser
-    def initialize(file)
-      @file = file
+    attr_reader :file, :repeating
 
-      unless File.exists?(@file)
+    def initialize(file, options = {})
+      options = { :repeating => true }.merge(options)
+      @file = file
+      @repeating = options[:repeating]
+
+      unless File.exists?(file)
         raise MidiLyrics::FileNotFound
       end
     end
 
     def read_sequence_from_file
       @sequence = ::MIDI::Sequence.new()
-      File.open(@file, "rb") do | file |
+      File.open(file, "rb") do | file |
         @sequence.read(file)
       end
       @sequence
@@ -100,6 +113,29 @@ module MidiLyrics
       @lyrics = new_lyrics
     end
 
+    def half_is_equal
+      half = @lyrics.count / 2
+      (0..(half-1)).each do |x|
+        unless @lyrics[x].similar_to?(@lyrics[x + half])
+          return false
+        end
+      end
+      return true
+    end
+
+    def merge_half_lyrics
+      half = @lyrics.count / 2
+      (0..(half-1)).collect do |x|
+        @lyrics[x].start2_in_pulses = @lyrics.delete_at(half).start_in_pulses
+      end
+    end
+
+    def remove_repeating
+      if half_is_equal
+        merge_half_lyrics
+      end
+    end
+
     def extract
       read_sequence_from_file
       load_tracks
@@ -107,6 +143,7 @@ module MidiLyrics
       load_lyrics
       remove_heading_blank_lines
       consolidate_carriage_returns
+      remove_repeating unless repeating
       @lyrics
     end
   end
