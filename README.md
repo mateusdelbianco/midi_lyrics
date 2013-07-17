@@ -1,7 +1,9 @@
 # MidiLyrics
 
-TODO: Write a gem description
-
++[![Build Status](https://travis-ci.org/mateusdelbianco/midi_lyrics.png)](https://travis-ci.org/mateusdelbianco/midi_lyrics)
++[![Code Climate](https://codeclimate.com/github/mateusdelbianco/midi_lyrics.png)](https://codeclimate.com/github/mateusdelbianco/midi_lyrics)
++[![Coverage Status](https://coveralls.io/repos/mateusdelbianco/midi_lyrics/badge.png?branch=master)](https://coveralls.io/r/mateusdelbianco/midi_lyrics?branch=master)
+ 
 ## Installation
 
 Add this line to your application's Gemfile:
