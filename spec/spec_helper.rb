@@ -14,7 +14,9 @@ class SimpleCov::Formatter::MergedFormatter
   end
 end
 SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
-SimpleCov.start
+SimpleCov.start do
+  add_filter "spec/spec_helper.rb"
+end
 
 require "midi_lyrics"
 
