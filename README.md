@@ -22,10 +22,9 @@ Or install it yourself as:
 
     >> MidiLyrics::Parser.new("test.mid").extract.collect(&:as_json)
     => [
-        { text: "Test", start: 0,     start2: 0.0, duration: 0.417 },
-        { text: "ing ", start: 0.5,   start2: 0.0, duration: 0.417 },
-        { text: "\r",   start: 0.917, start2: 0.0, duration: 0     },
-        { text: "\n",   start: 0.917, start2: 0.0, duration: 0     }
+        { text: "Test",  start: 0,     start2: 0.0, duration: 0.417 },
+        { text: "ing",   start: 0.5,   start2: 0.0, duration: 0.417 },
+        { text: " \r\n", start: 0.917, start2: 0.0, duration: 0  }
       ]
 
 ## Contributing
