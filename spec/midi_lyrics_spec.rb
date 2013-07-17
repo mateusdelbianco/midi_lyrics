@@ -8,7 +8,39 @@ describe MidiLyrics do
     expect(MidiLyrics::Parser.new("spec/fixtures/one_note_one_syllable.mid").extract).to be_kind_of(Array)
   end
 
-  context "parsing" do
+  context "accessing LyricSyllable attributes" do
+    let(:lyrics) { MidiLyrics::Parser.new("spec/fixtures/repeating_lyrics.mid").extract }
+
+    it "has text method" do
+      expect(lyrics[1].text).to eq("ing ")
+    end
+
+    it "has start_in_pulses method" do
+      expect(lyrics[1].start_in_pulses).to eq(192)
+    end
+
+    it "has start method" do
+      expect(lyrics[1].start).to eq(0.5)
+    end
+
+    it "has start2_in_pulses method" do
+      expect(lyrics[1].start2_in_pulses).to eq(1152)
+    end
+
+    it "has start2 method" do
+      expect(lyrics[1].start2).to eq(3.0)
+    end
+
+    it "has duration_in_pulses method" do
+      expect(lyrics[1].duration_in_pulses).to eq(160)
+    end
+
+    it "has duration method" do
+      expect(lyrics[1].duration).to eq(QUARTER_NOTE_DURATION)
+    end
+  end
+
+  context "file parsing" do
     it "parses one_note_one_syllable.mid correctly" do
       lyrics = MidiLyrics::Parser.new("spec/fixtures/one_note_one_syllable.mid").extract
       lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
