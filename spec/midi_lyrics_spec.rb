@@ -50,7 +50,7 @@ describe MidiLyrics do
         MidiLyrics::Parser.new("spec/fixtures/one_note_one_syllable.mid").extract.collect(&:as_json)
       ).to eq([
         { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+        { text: "\r\n", start: QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
     end
 
@@ -59,7 +59,7 @@ describe MidiLyrics do
         MidiLyrics::Parser.new("spec/fixtures/two_notes_one_syllable.mid").extract.collect(&:as_json)
       ).to eq([
         { text: "Test", start: 0, start2: 0.0, duration: 0.5 + QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+        { text: "\r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
     end
 
@@ -69,7 +69,7 @@ describe MidiLyrics do
       ).to eq([
         { text: "Test", start: 0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+        { text: "\r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
     end
 
@@ -79,13 +79,13 @@ describe MidiLyrics do
       ).to eq([
         { text: "Test", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 1, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 1 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r", start: 1 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "One", start: 1.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 1.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Two", start: 2.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 2.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Three", start: 3.5, start2: 0.0, duration: HALF_NOTE_DURATION },
-        { text: " \r\n", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+        { text: "\r\n", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
     end
 
@@ -95,22 +95,22 @@ describe MidiLyrics do
       ).to eq([
         { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "One", start: 1.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 1.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Two", start: 1.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 1.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Three", start: 2.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: 2.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r\n", start: 2.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Test", start: 2.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 3.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 3.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r", start: 3.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "One", start: 3.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 3.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Two", start: 4.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 4.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Three", start: 4.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: 4.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+        { text: "\r\n", start: 4.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
       ])
     end
 
@@ -120,13 +120,13 @@ describe MidiLyrics do
       ).to eq([
         { text: "Test", start: 0.0, start2: 2.5, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 0.5, start2: 3.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 0.5 + QUARTER_NOTE_DURATION, start2: 3.0 + QUARTER_NOTE_DURATION, duration: 0.0 },
+        { text: "\r", start: 0.5 + QUARTER_NOTE_DURATION, start2: 3.0 + QUARTER_NOTE_DURATION, duration: 0.0 },
         { text: "One", start: 1.0, start2: 3.5, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 1.0 + QUARTER_NOTE_DURATION, start2: 3.5 + QUARTER_NOTE_DURATION, duration: 0.0 },
         { text: "Two", start: 1.5, start2: 4.0, duration: QUARTER_NOTE_DURATION },
         { text: " ", start: 1.5 + QUARTER_NOTE_DURATION, start2: 4.0 + QUARTER_NOTE_DURATION, duration: 0.0 },
         { text: "Three", start: 2.0, start2: 4.5, duration: QUARTER_NOTE_DURATION },
-        { text: " \r\n", start: 2.0 + QUARTER_NOTE_DURATION, start2: 4.5 + QUARTER_NOTE_DURATION, duration: 0.0 }
+        { text: "\r\n", start: 2.0 + QUARTER_NOTE_DURATION, start2: 4.5 + QUARTER_NOTE_DURATION, duration: 0.0 }
       ])
     end
 
@@ -134,22 +134,22 @@ describe MidiLyrics do
       [
         { text: "Test", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 1.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 1.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r", start: 1.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "One", start: 1.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 1.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Two", start: 2.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 2.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Three", start: 3.5, start2: 0.0, duration: HALF_NOTE_DURATION },
-        { text: " \r\n", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r\n", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Test", start: 4.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "ing", start: 5.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
-        { text: " \r", start: 5.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r", start: 5.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Four", start: 5.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 5.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Five", start: 6.5, start2: 0.0, duration: HALF_NOTE_DURATION },
         { text: " ", start: 6.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
         { text: "Six", start: 7.5, start2: 0.0, duration: HALF_NOTE_DURATION },
-        { text: " \r\n", start: 7.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\r\n", start: 7.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
       ]
     end
 

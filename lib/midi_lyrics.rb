@@ -139,6 +139,12 @@ module MidiLyrics
       @lyrics = new_lyrics
     end
 
+    def remove_lines_trailing_spaces
+      @lyrics.each do |l|
+        l.text.gsub!(/^ ([\r\n])/, '\1')
+      end
+    end
+
     def half_is_equal
       half = @lyrics.count / 2
       (0..(half-1)).each do |x|
@@ -169,6 +175,7 @@ module MidiLyrics
       load_lyrics
       remove_heading_blank_lines
       consolidate_empty_syllables
+      remove_lines_trailing_spaces
       remove_repeating unless repeating
       @lyrics
     end

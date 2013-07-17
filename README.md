@@ -24,7 +24,7 @@ Or install it yourself as:
     => [
         { text: "Test",  start: 0,     start2: 0.0, duration: 0.417 },
         { text: "ing",   start: 0.5,   start2: 0.0, duration: 0.417 },
-        { text: " \r\n", start: 0.917, start2: 0.0, duration: 0  }
+        { text: "\r\n", start: 0.917, start2: 0.0, duration: 0  }
       ]
 
 ## Contributing
