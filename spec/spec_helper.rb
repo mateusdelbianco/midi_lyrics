@@ -4,6 +4,18 @@
 # loaded once.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require "simplecov"
+require "coveralls"
+
+class SimpleCov::Formatter::MergedFormatter
+  def format(result)
+    SimpleCov::Formatter::HTMLFormatter.new.format(result)
+    Coveralls::SimpleCov::Formatter.new.format(result)
+  end
+end
+SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
+SimpleCov.start
+
 require "midi_lyrics"
 
 RSpec.configure do |config|
