@@ -20,7 +20,13 @@ Or install it yourself as:
 
 ## Usage
 
-    MidiLyrics::Parser.new("test.mid").extract
+    >> MidiLyrics::Parser.new("test.mid").extract
+    => [
+        { text: "Test", start: 0,     start2: 0.0, duration: 0.417 },
+        { text: "ing ", start: 0.5,   start2: 0.0, duration: 0.417 },
+        { text: "\r",   start: 0.917, start2: 0.0, duration: 0     },
+        { text: "\n",   start: 0.917, start2: 0.0, duration: 0     }
+      ]
 
 ## Contributing
 
