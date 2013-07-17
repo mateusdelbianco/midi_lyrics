@@ -92,6 +92,39 @@ describe MidiLyrics do
         { text: "\n", start: 2.0 + QUARTER_NOTE_DURATION, start2: 4.5 + QUARTER_NOTE_DURATION, duration: 0.0 },
       ])
     end
+
+    let :parsed_complete_example do
+      [
+        { text: "Test", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing ", start: 1.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r", start: 1.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "One", start: 1.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "Two", start: 2.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "Three ", start: 3.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "\r", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\n", start: 3.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "Test", start: 4.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing ", start: 5.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r", start: 5.0 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "Four", start: 5.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "Five", start: 6.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "Six ", start: 7.5, start2: 0.0, duration: HALF_NOTE_DURATION },
+        { text: "\r", start: 7.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "\n", start: 7.5 + HALF_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+      ]
+    end
+
+    it "parses complete_example.mid correctly repeating" do
+      lyrics = MidiLyrics::Parser.new("spec/fixtures/complete_example.mid").extract
+      lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
+      expect(lyrics).to eq(parsed_complete_example)
+    end
+
+    it "parses complete_example.mid correctly not repeating" do
+      lyrics = MidiLyrics::Parser.new("spec/fixtures/complete_example.mid", repeating: false).extract
+      lyrics = lyrics.collect{|x| { text: x.text, start: x.start, start2: x.start2, duration: x.duration } }
+      expect(lyrics).to eq(parsed_complete_example)
+    end
   end
 
   context "error handling" do
