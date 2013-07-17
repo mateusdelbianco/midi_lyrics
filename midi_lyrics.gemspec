@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["mateus@delbianco.net.br"]
   spec.description   = %q{MIDI Lyrics extractor}
   spec.summary       = %q{Extracts lyrics with timing from MIDI files}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/mateusdelbianco/midi_lyrics"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
