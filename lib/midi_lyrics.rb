@@ -32,6 +32,15 @@ module MidiLyrics
       self.duration_in_pulses == another.duration_in_pulses && self.text == another.text
     end
 
+    def as_json
+      {
+        text: text,
+        start: start,
+        start2: start2,
+        duration: duration
+      }
+    end
+
     private
     def format_time(time)
       @sequence.pulses_to_seconds(time.to_f).round(3)
