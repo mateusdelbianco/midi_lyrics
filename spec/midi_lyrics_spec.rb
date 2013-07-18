@@ -46,6 +46,16 @@ describe MidiLyrics do
       ])
     end
 
+    it "parses two_notes_two_syllables_dash.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/two_notes_two_syllables_dash.mid").extract
+      ).to eq([
+        { text: "Test", start: 0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r\n", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
     it "parses two_notes_three_syllables.mid correctly" do
       expect(
         MidiLyrics::Parser.new("spec/fixtures/two_notes_three_syllables.mid").extract

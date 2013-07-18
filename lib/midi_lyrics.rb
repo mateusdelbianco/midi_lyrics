@@ -29,7 +29,7 @@ module MidiLyrics
     end
 
     def blank?
-      text.strip == ""
+      text.gsub('-', '').strip == ""
     end
 
     def similar_to?(another)
@@ -109,12 +109,12 @@ module MidiLyrics
       @lyrics = []
       @lyrics_track.each do |event|
         event_text = event.data.collect{|x| x.chr(Encoding::UTF_8)}.join
-        letters = event_text.gsub(/^\s+|\s+$/, '')
+        letters = event_text.gsub(/^[\s-]+|[\s-]+$/, '')
 
-        heading_space = event_text.match(/^(\s+)[^\s]/)
+        heading_space = event_text.match(/^([\s-]+)[^[\s-]]/)
         heading_space = heading_space[1] unless heading_space.nil?
 
-        trailing_space = event_text.match(/(\s+)$/)
+        trailing_space = event_text.match(/([\s-]+)$/)
         trailing_space = trailing_space[1] unless trailing_space.nil?
 
         [heading_space, letters, trailing_space].each do |text|
@@ -131,7 +131,7 @@ module MidiLyrics
     end
 
     def remove_heading_blank_lines
-      while @lyrics.first.text.strip == ""
+      while @lyrics.first.blank?
         @lyrics.shift
       end
     end
@@ -140,13 +140,18 @@ module MidiLyrics
       new_lyrics = []
       @lyrics.each do |l|
         if l.blank?
-          if new_lyrics.last.blank?
-            new_lyrics.last.text += l.text
-          else
-            l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
-            l.duration_in_pulses = 0.0
-            new_lyrics << l
-          end
+          # if new_lyrics.last
+            if new_lyrics.last.blank?
+              new_lyrics.last.text += l.text
+            else
+              l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
+              l.duration_in_pulses = 0.0
+              new_lyrics << l
+            end
+          # else
+          #   l.duration_in_pulses = 0.0
+          #   new_lyrics << l
+          # end
         else
           new_lyrics << l
         end
@@ -156,7 +161,7 @@ module MidiLyrics
 
     def remove_lines_trailing_spaces
       @lyrics.each do |l|
-        l.text.gsub!(/^ ([\r\n])/, '\1')
+        l.text.gsub!(/^[ -]*([\r\n])/, '\1')
       end
     end
 
