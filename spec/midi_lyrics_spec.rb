@@ -66,6 +66,38 @@ describe MidiLyrics do
       ])
     end
 
+    it "parses three_notes_two_syllables.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/three_notes_two_syllables.mid").extract
+      ).to eq([
+        { text: "Test", start: 0, start2: 0.0, duration: 0.5 + QUARTER_NOTE_DURATION },
+        { text: "ing", start: 1, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r\n", start: 1 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
+    it "parses three_notes_two_syllables_with_pause.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/three_notes_two_syllables_with_pause.mid").extract
+      ).to eq([
+        { text: "Test", start: 0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing", start: 1, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "\r\n", start: 1 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
+    it "parses three_notes_three_syllables.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/three_notes_three_syllables.mid").extract
+      ).to eq([
+        { text: "Hi,", start: 0.0, start2: 0.0, duration: 0.5 },
+        { text: " ", start: 0.5, start2: 0.0, duration: 0.0 },
+        { text: "test", start: 0.5, start2: 0.0, duration: 0.5 },
+        { text: "ing", start: 1.0, start2: 0.0, duration: 0.5 },
+        { text: "\r\n", start: 1.5, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
     it "parses spaces_and_returns.mid correctly" do
       expect(
         MidiLyrics::Parser.new("spec/fixtures/spaces_and_returns.mid").extract

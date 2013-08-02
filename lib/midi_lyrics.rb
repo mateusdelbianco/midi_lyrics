@@ -28,6 +28,10 @@ module MidiLyrics
       format_time(duration_in_pulses)
     end
 
+    def end_in_pulses
+      start_in_pulses + duration_in_pulses
+    end
+
     def blank?
       text.gsub('-', '').strip == ""
     end
@@ -73,6 +77,7 @@ module MidiLyrics
       consolidate_empty_syllables
       remove_lines_trailing_spaces
       remove_repeating unless repeating
+      fix_durations
       @lyrics.collect(&:as_json)
     end
 
@@ -180,6 +185,18 @@ module MidiLyrics
     def remove_repeating
       if half_is_equal
         merge_half_lyrics
+      end
+    end
+
+    def lyric_starting_at time_in_pulses
+      @lyrics.find{ |l| l.duration_in_pulses != 0.0 && l.start_in_pulses == time_in_pulses }
+    end
+
+    def fix_durations
+      @lyrics.each do |lyric|
+        while @durations.has_key?(lyric.end_in_pulses) && lyric_starting_at(lyric.end_in_pulses).nil?
+          lyric.duration_in_pulses += @durations[lyric.end_in_pulses]
+        end
       end
     end
   end
