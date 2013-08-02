@@ -76,8 +76,8 @@ module MidiLyrics
       remove_heading_blank_lines
       consolidate_empty_syllables
       remove_lines_trailing_spaces
-      remove_repeating unless repeating
       fix_durations
+      remove_repeating unless repeating
       @lyrics.collect(&:as_json)
     end
 
