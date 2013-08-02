@@ -18,9 +18,9 @@ describe MidiLyrics do
       ])
     end
 
-    it "parses one_note_two_syllable.mid correctly" do
+    it "parses one_note_two_syllables.mid correctly" do
       expect(
-        MidiLyrics::Parser.new("spec/fixtures/one_note_two_syllable.mid").extract
+        MidiLyrics::Parser.new("spec/fixtures/one_note_two_syllables.mid").extract
       ).to eq([
         { text: "Test One", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
         { text: "\r\n", start: QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 }
