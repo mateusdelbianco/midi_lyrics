@@ -140,18 +140,13 @@ module MidiLyrics
       new_lyrics = []
       @lyrics.each do |l|
         if l.blank?
-          # if new_lyrics.last
-            if new_lyrics.last.blank?
-              new_lyrics.last.text += l.text
-            else
-              l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
-              l.duration_in_pulses = 0.0
-              new_lyrics << l
-            end
-          # else
-          #   l.duration_in_pulses = 0.0
-          #   new_lyrics << l
-          # end
+          if new_lyrics.last.blank?
+            new_lyrics.last.text += l.text
+          else
+            l.start_in_pulses = new_lyrics.last.start_in_pulses + new_lyrics.last.duration_in_pulses
+            l.duration_in_pulses = 0.0
+            new_lyrics << l
+          end
         else
           new_lyrics << l
         end
