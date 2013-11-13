@@ -1,8 +1,11 @@
 require "spec_helper"
 
 describe MidiLyrics do
+  FLOAT_PRECISION_ERROR = 0.001
   HALF_NOTE_DURATION = 0.875
   QUARTER_NOTE_DURATION = 0.417
+  QUARTER_NOTE_DURATION_90 = 0.555
+  QUARTER_NOTE_DURATION_60 = 0.833
 
   it "returns an array" do
     expect(MidiLyrics::Parser.new("spec/fixtures/one_note_one_syllable.mid").extract).to be_kind_of(Array)
@@ -189,11 +192,64 @@ describe MidiLyrics do
         MidiLyrics::Parser.new("spec/fixtures/complete_example.mid", repeating: true).extract
       ).to eq(parsed_complete_example)
     end
+
+    it "parses 60_tempo.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/60_tempo.mid").extract
+      ).to eq([
+        { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION_60 },
+        { text: "ing", start: 1, start2: 0.0, duration: QUARTER_NOTE_DURATION_60 },
+        { text: "\r\n", start: 1 + QUARTER_NOTE_DURATION_60, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
+    it "parses 90_tempo.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/90_tempo.mid").extract
+      ).to eq([
+        { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION_90 + FLOAT_PRECISION_ERROR },
+        { text: "ing", start: 0.667, start2: 0.0, duration: QUARTER_NOTE_DURATION_90 },
+        { text: "\r\n", start: 1.222, start2: 0.0, duration: 0.0 }
+      ])
+    end
+
+    it "parses changing_tempo.mid correctly" do
+      expect(
+        MidiLyrics::Parser.new("spec/fixtures/changing_tempo.mid").extract
+      ).to eq([
+        { text: "Test", start: 0.0, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: "ing", start: 0.5, start2: 0.0, duration: QUARTER_NOTE_DURATION },
+        { text: " ", start: 0.5 + QUARTER_NOTE_DURATION, start2: 0.0, duration: 0.0 },
+        { text: "One", start: 1.0, start2: 0.0, duration: QUARTER_NOTE_DURATION_60 },
+        { text: " ", start: 1.0 + QUARTER_NOTE_DURATION_60, start2: 0.0, duration: 0.0 },
+        { text: "Two", start: 2.0, start2: 0.0, duration: QUARTER_NOTE_DURATION_60 },
+        { text: "\r\n", start: 2.0 + QUARTER_NOTE_DURATION_60, start2: 0.0, duration: 0.0 }
+      ])
+    end
   end
 
   context "error handling" do
     it "raises MidiLyrics::FileNotFound if file does not exist" do
       expect { MidiLyrics::Parser.new("test.mid").extract }.to raise_error(MidiLyrics::FileNotFound)
+    end
+  end
+
+  describe MidiLyrics::TempoCalculator do
+    it "calculates simple tempo" do
+      tempo_calculator = MidiLyrics::TempoCalculator.new(
+        tempo_track: [
+          MidiLyrics::Tempo.new(start: 0, tempo: ::MIDI::Tempo.bpm_to_mpq(1)),
+          MidiLyrics::Tempo.new(start: 10, tempo: ::MIDI::Tempo.bpm_to_mpq(2)),
+          MidiLyrics::Tempo.new(start: 20, tempo: ::MIDI::Tempo.bpm_to_mpq(1))
+        ],
+        sequence: double(ppqn: 1)
+      )
+      tempo_calculator.calculate(0).should == 0
+      tempo_calculator.calculate(1).should == 60.0
+      tempo_calculator.calculate(10).should == 600.0
+      tempo_calculator.calculate(11).should == 630.0
+      tempo_calculator.calculate(20).should == 900.0
+      tempo_calculator.calculate(21).should == 960.0
     end
   end
 end

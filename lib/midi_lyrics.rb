@@ -4,28 +4,50 @@ require "midilib"
 module MidiLyrics
   class FileNotFound < StandardError; end
 
+  class Tempo
+    attr_accessor :start, :duration, :tempo
+
+    def initialize(fields = {})
+      self.start = fields[:start].to_f
+      self.tempo = fields[:tempo].to_f
+    end
+  end
+
+  class TempoCalculator
+    attr_accessor :tempo_track
+    attr_accessor :sequence
+
+    def initialize(fields = {})
+      self.tempo_track = fields[:tempo_track]
+      self.sequence = fields[:sequence]
+    end
+
+    def calculate(pulses)
+      pulses = pulses.to_f
+      value = 0.0
+      last_tempo = @tempo_track.first
+      @tempo_track.each do |t|
+        if t.start < pulses
+          value += (((t.start - last_tempo.start) / sequence.ppqn.to_f / ::MIDI::Tempo.mpq_to_bpm(last_tempo.tempo)) * 60.0)
+          last_tempo = t
+        end
+      end
+      if last_tempo.start < pulses
+        value += (((pulses - last_tempo.start) / sequence.ppqn.to_f / ::MIDI::Tempo.mpq_to_bpm(last_tempo.tempo)) * 60.0)
+      end
+      value
+    end
+  end
+
   class LyricSyllable
     attr_accessor :text, :start_in_pulses, :start2_in_pulses, :duration_in_pulses
-    attr_writer :sequence
+    attr_accessor :start, :start2, :duration
 
     def initialize(fields = {})
       self.start_in_pulses = fields[:start_in_pulses]
       self.start2_in_pulses = fields[:start2_in_pulses]
       self.duration_in_pulses = fields[:duration_in_pulses]
       self.text = fields[:text]
-      self.sequence = fields[:sequence]
-    end
-
-    def start
-      format_time(start_in_pulses)
-    end
-
-    def start2
-      format_time(start2_in_pulses)
-    end
-
-    def duration
-      format_time(duration_in_pulses)
     end
 
     def end_in_pulses
@@ -48,11 +70,6 @@ module MidiLyrics
         duration: duration
       }
     end
-
-    private
-    def format_time(time)
-      @sequence.pulses_to_seconds(time.to_f).round(3)
-    end
   end
 
   class Parser
@@ -70,6 +87,7 @@ module MidiLyrics
 
     def extract
       read_sequence_from_file
+      load_tempo_track
       load_tracks
       calculate_durations
       load_lyrics
@@ -78,6 +96,7 @@ module MidiLyrics
       remove_lines_trailing_spaces
       fix_durations
       remove_repeating unless repeating
+      calculate_seconds
       @lyrics.collect(&:as_json)
     end
 
@@ -88,6 +107,23 @@ module MidiLyrics
         @sequence.read(file)
       end
       @sequence
+    end
+
+    def load_tempo_track
+      @tempo_track = []
+
+      @sequence.tracks[0].each do |event|
+        if event.kind_of?(::MIDI::Tempo)
+          @tempo_track << Tempo.new(
+            start: event.time_from_start,
+            tempo: event.data
+          )
+        end
+      end
+
+      if @tempo_track.size == 0
+        @tempo_track << Tempo.new(start: 0, tempo: ::MIDI::Tempo.bpm_to_mpq(120))
+      end
     end
 
     def load_tracks
@@ -126,7 +162,6 @@ module MidiLyrics
         [heading_space, letters, trailing_space].each do |text|
           unless text.nil?
             @lyrics << LyricSyllable.new(
-              sequence: @sequence,
               start_in_pulses: event.time_from_start,
               duration_in_pulses: @durations[event.time_from_start],
               text: text
@@ -198,6 +233,16 @@ module MidiLyrics
         while @durations.has_key?(lyric.end_in_pulses) && lyric_starting_at(lyric.end_in_pulses).nil?
           lyric.duration_in_pulses += @durations[lyric.end_in_pulses]
         end
+      end
+    end
+
+    def calculate_seconds
+      tempo_calculator = TempoCalculator.new(tempo_track: @tempo_track, sequence: @sequence)
+
+      @lyrics.each do |l|
+        l.start = tempo_calculator.calculate(l.start_in_pulses).round(3)
+        l.start2 = tempo_calculator.calculate(l.start2_in_pulses).round(3)
+        l.duration = (tempo_calculator.calculate(l.start_in_pulses + l.duration_in_pulses) - l.start).round(3)
       end
     end
   end
