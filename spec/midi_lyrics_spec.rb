@@ -1,8 +1,8 @@
 require "spec_helper"
 
 describe MidiLyrics do
-  QUARTER_NOTE_DURATION = 0.417
   HALF_NOTE_DURATION = 0.875
+  QUARTER_NOTE_DURATION = 0.417
 
   it "returns an array" do
     expect(MidiLyrics::Parser.new("spec/fixtures/one_note_one_syllable.mid").extract).to be_kind_of(Array)

@@ -84,7 +84,7 @@ module MidiLyrics
     private
     def read_sequence_from_file
       @sequence = ::MIDI::Sequence.new()
-      File.open(file, "rb") do | file |
+      File.open(file, "rb") do |file|
         @sequence.read(file)
       end
       @sequence
@@ -93,7 +93,8 @@ module MidiLyrics
     def load_tracks
       @lyrics_track = ::MIDI::Track.new(@sequence)
       @noteon_track = ::MIDI::Track.new(@sequence)
-      @sequence.tracks[1].each do | event |
+
+      @sequence.tracks[1].each do |event|
         if event.kind_of?(::MIDI::MetaEvent) && event.meta_type == ::MIDI::META_LYRIC
           @lyrics_track.events << event
         end
